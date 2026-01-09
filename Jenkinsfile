@@ -36,7 +36,10 @@ pipeline {
                 script {
                     if (params['Playbook Action'] == 'Dry-Run') {
                         withCredentials([sshUserPrivateKey(credentialsId: 'ansible-connect', keyFileVariable: 'ANSIBLE_KEY')]) {
-                            sh "ansible-playbook --check -i /etc/ansible/hosts --private-key \$ANSIBLE_KEY ${params['Playbook Name']}.yml"
+                            sh """
+                                export ANSIBLE_HOST_KEY_CHECKING=False
+                                ansible-playbook --check -i /etc/ansible/hosts --private-key \$ANSIBLE_KEY ${params['Playbook Name']}.yml
+                            """
                         }
                     } 
                     else if (params['Playbook Action'] == 'Playbook-deploy') {
