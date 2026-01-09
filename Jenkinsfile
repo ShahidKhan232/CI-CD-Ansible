@@ -27,11 +27,13 @@ pipeline {
                 expression { params['Playbook Action'] == 'Dry-Run' || params['Playbook Action'] == 'Playbook-deploy' }
             }
             steps {
-                script {
-                    if (params['Playbook Action'] == 'Dry-Run') {
-                        sh "ansible-playbook --check -i /etc/ansible/hosts --private-key ${credentials('ansible-connect')} ${params["Playbook Name"]}.yml"
-                    } else if (params['Playbook Action'] == 'Playbook-deploy') {
-                        ansiblePlaybook credentialsId: 'ansible-connect', disableHostKeyChecking: true, inventory: '/etc/ansible/hosts', playbook: "${params['Playbook Name']}.yml"
+                withCredentials([sshUserPrivateKey(credentialsId: 'ansible-connect', keyFileVariable: 'KEYFILE')]) {
+                    script {
+                        if (params['Playbook Action'] == 'Dry-Run') {
+                            sh "ansible-playbook --check -i /etc/ansible/hosts --private-key ${KEYFILE} ${params["Playbook Name"]}.yml"
+                        } else if (params['Playbook Action'] == 'Playbook-deploy') {
+                            ansiblePlaybook credentialsId: 'ansible-connect', disableHostKeyChecking: true, inventory: '/etc/ansible/hosts', playbook: "${params['Playbook Name']}.yml"
+                        }
                     }
                 }
             }
