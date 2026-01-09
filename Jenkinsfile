@@ -14,7 +14,7 @@ pipeline {
         }
         stage('Git Pulling') {
             steps{
-                git branch: 'main', url: 'https://github.com/ShahidKhan232/CI-CD-Ansible.git'
+                git branch: 'master', url: 'https://github.com/AmanPathak-DevOps/CICD-Ansible.git'
             }
         }
         stage('Playbook Initializing') {
@@ -27,13 +27,11 @@ pipeline {
                 expression { params['Playbook Action'] == 'Dry-Run' || params['Playbook Action'] == 'Playbook-deploy' }
             }
             steps {
-                withCredentials([sshUserPrivateKey(credentialsId: 'ansible-connect', keyFileVariable: 'KEYFILE')]) {
-                    script {
-                        if (params['Playbook Action'] == 'Dry-Run') {
-                            sh "ansible-playbook --check -i /etc/ansible/hosts --private-key ${KEYFILE} ${params["Playbook Name"]}.yml"
-                        } else if (params['Playbook Action'] == 'Playbook-deploy') {
-                            ansiblePlaybook credentialsId: 'ansible-connect', disableHostKeyChecking: true, inventory: '/etc/ansible/hosts', playbook: "${params['Playbook Name']}.yml"
-                        }
+                script {
+                    if (params['Playbook Action'] == 'Dry-Run') {
+                        sh "ansible-playbook --check -i /etc/ansible/hosts --private-key ${credentials('ansible-connect')} ${params["Playbook Name"]}.yml"
+                    } else if (params['Playbook Action'] == 'Playbook-deploy') {
+                        ansiblePlaybook credentialsId: 'ansible-connect', disableHostKeyChecking: true, inventory: '/etc/ansible/hosts', playbook: "${params['Playbook Name']}.yml"
                     }
                 }
             }
