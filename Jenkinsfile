@@ -4,40 +4,61 @@ properties([
         choice(choices: ['Dry-Run','Playbook-deploy'], name: 'Playbook Action')
     ])
 ])
+
 pipeline {
     agent any 
     stages {
         stage('Preparing') {
-            steps{
+            steps {
                 sh 'echo Preparing'
             }
         }
+
         stage('Git Pulling') {
-            steps{
-                git branch: 'master', url: 'https://github.com/AmanPathak-DevOps/CICD-Ansible.git'
+            steps {
+                git branch: 'master', url: 'https://github.com/ShahidKhan232/CI-CD-Ansible.git'
             }
         }
+
         stage('Playbook Initializing') {
-            steps{
+            steps {
                 sh 'echo Playbook Initializing'
             }
         }
+
         stage('Playbook Running') {
             when {
-                expression { params['Playbook Action'] == 'Dry-Run' || params['Playbook Action'] == 'Playbook-deploy' }
+                expression { 
+                    params['Playbook Action'] == 'Dry-Run' || params['Playbook Action'] == 'Playbook-deploy' 
+                }
             }
             steps {
                 script {
                     if (params['Playbook Action'] == 'Dry-Run') {
-                        sh "ansible-playbook --check -i /etc/ansible/hosts --private-key ${credentials('ansible-connect')} ${params["Playbook Name"]}.yml"
-                    } else if (params['Playbook Action'] == 'Playbook-deploy') {
-                        ansiblePlaybook credentialsId: 'ansible-connect', disableHostKeyChecking: true, inventory: '/etc/ansible/hosts', playbook: "${params['Playbook Name']}.yml"
+                        withCredentials([sshUserPrivateKey(credentialsId: 'ansible-connect', keyFileVariable: 'ANSIBLE_KEY')]) {
+                            sh "ansible-playbook --check -i /etc/ansible/hosts --private-key \$ANSIBLE_KEY ${params['Playbook Name']}.yml"
+                        }
+                    } 
+                    else if (params['Playbook Action'] == 'Playbook-deploy') {
+                        ansiblePlaybook(
+                            credentialsId: 'ansible-connect',
+                            disableHostKeyChecking: true,
+                            inventory: '/etc/ansible/hosts',
+                            playbook: "${params['Playbook Name']}.yml"
+                        )
                     }
                 }
             }
         }
+
         stage('Playbook deployed') {
-            steps{
+            steps {
+                sh 'echo Deployment done!!!!'
+            }
+        }
+
+        stage('Finished') {
+            steps {
                 sh 'echo Deployment done!!!!'
             }
         }
