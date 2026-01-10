@@ -1,7 +1,7 @@
 # Copy this in your /etc/ansible/hosts file(Ansible Master)
 [mongodb_servers]
-server1 ansible_host=172.31.86.108
-server2 ansible_host=172.31.90.239
+server1 ansible_host=172.31.11.231
+server2 ansible_host=172.31.9.247
 
 [all:vars]
 ansible_python_interpreter=/usr/bin/python3

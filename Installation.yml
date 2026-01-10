@@ -1,2 +1,3 @@
 ---
 - import_playbook: Nginx-configuration/nginx.yml
+- imort_playbook: Ansible_Mongo-Role/mongodb.yml
