@@ -1,5 +1,6 @@
 [nginx_server]
 server1 ansible_host=172.31.6.230
+server2 ansible_host=172.31.12.232
 
 [all:vars]
 ansible_user=ubuntu
