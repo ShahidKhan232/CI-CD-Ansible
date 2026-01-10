@@ -32,16 +32,12 @@ The `mongodb.yml` playbook applies two roles, `mongodb` and `mongodb_users`, to 
 
 - `mongodb_users`: The tasks in this role clone and configure the users and database things. Once the playbook runs successfully, you'll have your Users and database will be configured on the MongoDB server.
 
-## Getting Started
-
-Before going for the steps, if you want to implement it step by step then refer the blog where everything is present without any confusion.
--  [MongoDB Configuration Blog](https://medium.com/@aman.pathak_51134/automating-infrastructure-ansible-playbooks-for-nginx-and-mongodb-configuration-chapter-2-6c9afddae22e)
 
 Follow these steps to configure MongoDB on your target hosts:
 
 1. Clone this repository to your Ansible master server:
 
-git clone https://github.com/AmanPathak-DevOps/CICD-Ansible.git
+git clone https://github.com/ShahidKhan232/CI-CD-Ansible.git
 
 
 2. Navigate to the `Ansible-Mongo-Role` directory:
